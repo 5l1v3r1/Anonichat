@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html style="height:100%;">
+	<head>
+		<title>Anonichat Reborn</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/bootstrap.css" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<link rel="stylesheet" href="assets/css/customcss.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<!--[if lte IE 9]><link rel="stylesheet" href="assets/css/ie9.css" /><![endif]-->
+	</head>
+	<body style="padding: 0; display:block; height: 100%">
+		<div id="footer" style="bottom: inherit;">
+		<ul class="copyright">
+				<li>Your chat name is: <%= name %></li>
+				<li>Your chat room ID is: <%= chatID %></li>
+		</ul>
+	</div>
+	<div class="chatArea">
+			<div id="container">
+				<div id="chatbox" style="overflow: auto">
+				</div>
+				<input type="text" id="message">
+				<input type="button" id="clicker" value="Send Message">
+			</div>
+				<ul id="chatters" style="overflow: auto"></ul>
+	</div>
+
+		<!-- Footer -->
+			<footer id="footer" style="clear: both; top: 2em;position: relative;z-index: -1;">
+				<ul class="icons">
+					<li><a href="https://twitter.com/ProNinjaCat" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+					<li><a href="#" class="icon fa-jpy"><span class="label">Nothing</span></a></li>
+					<li><a href="http://github.com/JackRyder" class="icon fa-github"><span class="label">GitHub</span></a></li>
+					<li><a href="mailto:me@jackryder.co.uk" class="icon fa-envelope-o"><span class="label">Email</span></a></li>
+				</ul>
+				<ul class="copyright">
+					<li>&copy; Anonichat Reborn</li><li>Credits: <a href="http://jackryder.co.uk">Jack Ryder</a></li>
+				</ul>
+			</footer>
+
+		<!-- Scripts -->
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script type="text/javascript" src="assets/js/jquery.min.js"></script>
+			<script src="/socket.io/socket.io.js"></script>
+			<script>
+			var name = '<%= name %>';
+			if(name == "SERVER")
+			{
+				alert("Last time I checked, you're not the server.");
+				location.href = "/"
+			}
+			else if(name.trim() == '')
+			{
+				alert("The name field is required");
+				location.href = "/";
+			}
+
+				var socket = io.connect();
+
+				// on connection to server, ask for user's name with an anonymous callback
+				socket.on('connect', function(){
+					// call the server-side function 'adduser' and send one parameter (value of prompt)
+					socket.emit('adduser', '<%= name %>', '<%= chatID %>');
+
+				});
+
+				// listener, whenever the server emits 'updatechat', this updates the chat body
+				socket.on('updatechat', function (username, data) {
+
+					if(username == "SERVER")
+					{
+							
+						$('#chatbox').append('<b style="color: #008ae6">'+username + ':</b> ' + data + '<br>');
+					}
+					else
+					{
+					$('#chatbox').append('<b>'+username + ':</b> ' + data + '<br>');
+					var textarea = document.getElementById('chatbox');
+					textarea.scrollTop = textarea.scrollHeight;
+					}
+				});
+
+				socket.on('updatechatlist', function (data) {
+					var gather = "";
+					var array = JSON.stringify(data);
+					$.each(JSON.parse(array),function(index, value){
+					    if(value == '<%= chatID %>')
+					    {
+					    	gather = gather + index + '<br>';
+					    }
+					});
+					$('#chatters').html(gather);
+				});
+
+				socket.on('checkexist', function (username) {
+					alert(username + " is already in this room, please choose a different name");
+					location.href = "/";
+					return;
+				});
+				
+				// on load of page
+				$(function(){
+					// when the client clicks SEND
+					$('#clicker').click( function() {
+						var message = $('#message').val();
+						$('#message').val('');
+						// tell server to execute 'sendchat' and send along one parameter
+						socket.emit('sendchat', message);
+					});
+
+					// when the client hits ENTER on their keyboard
+					$('#message').keypress(function(e) {
+						if(e.which == 13) {
+							$('#clicker').click();
+						}
+					});
+				});
+
+			</script>
+	</body>
+</html>

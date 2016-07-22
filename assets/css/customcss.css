@@ -1,0 +1,84 @@
+#signup-form
+{
+	display: block;
+}
+#signup-form input[type="text"], #signup-form input[type="password"], #signup-form input[type="email"]
+{
+	display: inline-block;
+}
+#push
+{
+	display: block;
+	padding-bottom: 10px;
+}
+#signup-form > *
+{
+	margin: 0;
+}
+body
+{
+	background-image: url("../../images/bg01.jpg");
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+#navbar
+{
+		-moz-transition: opacity 0.5s ease-in-out;
+		-webkit-transition: opacity 0.5s ease-in-out;
+		-ms-transition: opacity 0.5s ease-in-out;
+		transition: opacity 0.5s ease-in-out;
+		color: rgba(255, 255, 255, 0.5);
+		left: 4em;
+		position: absolute;
+}
+.chatArea
+{
+	height: 70%;
+}
+#chatbox
+{
+	border: solid 2px rgba(255, 255, 255, 0.35);
+	width: 100%;
+	height: 100%;
+	resize: none;
+	border-color: #008ae6;
+	color: white;
+	background-color: black;
+}
+#chatters
+{
+	border: solid 2px rgba(255, 255, 255, 0.35);
+	width: 25%;
+	height: 100%;
+	display: block;
+	float: left;
+	resize: none;
+	border-color: #008ae6;
+	color: white;
+}
+#container
+{
+	display: block;
+	height: 100%;
+	width: 70%;
+	float: right;
+	padding-right: 5%;
+}
+#message
+{
+	width: 83%;
+	display: inline-block;
+}
+#footer
+{
+	left: 3em;
+}
+#chat
+{
+	margin: 0;
+}
+#clicker
+{
+z-index: 1;
+position: relative;
+}
